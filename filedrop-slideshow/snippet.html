@@ -35,8 +35,8 @@
     min-width: 300px;
 }
 
-.arrowGQ_left,
-.arrowGQ_right {
+.carousel-arrow-left,
+.carousel-arrow-right {
     top: 50%;
     border: solid transparent;
     content: " ";
@@ -48,29 +48,33 @@
     margin-top: -15px;
 }
 
-.arrowGQ_right {
+.carousel-arrow-right {
     left: 35%;
     border-left-color: #FFFFFF;
 }
 
-.arrowGQ_left {
+.carousel-arrow-left {
     right: 35%;
     border-right-color: #FFFFFF;
 }
 </style>
 <div id="Carousel" class="carousel slide carousel-fade col-lg-8 col-offset-2">
-    <ol id="filedrop_slide_show_count" class="carousel-indicators">
+    <ol id="filedrop-slide-show-count" class="carousel-indicators">
     </ol>
-    <div id="filedrop_slide_show_img" role="listbox" class="carousel-inner">
+    <div id="filedrop-slide-show-img" role="listbox" class="carousel-inner">
     </div>
     <!-- Left and right controls -->
     <a class="left carousel-control" href="#Carousel" data-slide="prev">
-        <span class="arrowGQ_left"></span>
+        <span class="carousel-arrow-left"></span>
     </a>
     <a class="right carousel-control" href="#Carousel" data-slide="next">
-        <span class="arrowGQ_right"></span>
+        <span class="carousel-arrow-right"></span>
     </a>
 </div>
+<!-- This section brings back a list of the file names, uncomment if you wish this to be displayed -->
+<!--
+<ul id="filelist"></ul>
+-->
 <script type="text/javascript">
 $('.carousel').carousel();
 
@@ -81,26 +85,30 @@ var baseURL = Frog.Utilities.getBaseUrl(),
     imgAddress = function(file) {
         return baseURL + '/app/file/resource/' + file.file.uuid;
     },
-    fileDropUuid = '72C35B492002821AF1922FA01D6943066824AD8CD860E3AD';
+    fileDropUuid = '72C35B492002821AF1922FA01D6943066824AD8CD860E3AD'; // <--Change this to the UUID of your file drop widget
 	
-
-	
-
 Frog.Model
     .api('filedrop.get', {
         filedrop: fileDropUuid
     }).done(function(filesResponse) {
         var $fileList = $('#filelist'),
-            $slideShowCount = $("#filedrop_slide_show_count"),
-            $slideShowImageContainer = $("#filedrop_slide_show_img"),
-			fileCount=0;
+            $slideShowCount = $("#filedrop-slide-show-count"),
+            $slideShowImageContainer = $("#filedrop-slide-show-img"),
+			fileCount = 0;
+			
         filesResponse.data.resources.forEach(function(file, index) {
             if (FDPisImage(file.file.ext)) {
-                // Append title
-                $fileList.append(file.file.name + "<BR>");
+				if ($filelist.length) {
+					// This only runs when you have uncommented the the HTML code above
+					// This code adds file names to the ul#filelist
+					$fileList.append(
+						$('<li></li>').text(file.file.name)
+					);
+				}
+				
                 $slideShowCount
                     .append(
-                        jQuery('<li></li>')
+                        $('<li></li>')
                             .attr('data-target', 'Carousel')
                             .attr('data-slide-to', fileCount)
                             .addClass(function() {
@@ -112,14 +120,14 @@ Frog.Model
 
                $slideShowImageContainer
                     .append(
-                        jQuery('<div></div>').addClass('item')
+                        $('<div></div>').addClass('item')
                             .addClass(function() {
                                 if (fileCount === 0) {
                                     return 'active';
                                 }
                             })
                             .append(
-                                jQuery('<img />').addClass('img-responsive')
+                                $('<img />').addClass('img-responsive')
                                     .attr('src', imgAddress(file))
                                     .attr('align', 'center')
                             )
