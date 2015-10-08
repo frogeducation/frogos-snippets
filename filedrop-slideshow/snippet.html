@@ -86,7 +86,7 @@ var baseURL = Frog.Utilities.getBaseUrl(),
         return baseURL + '/app/file/resource/' + file.file.uuid;
     },
     fileDropUuid = '72C35B492002821AF1922FA01D6943066824AD8CD860E3AD'; // <--Change this to the UUID of your file drop widget
-	
+    
 Frog.Model
     .api('filedrop.get', {
         filedrop: fileDropUuid
@@ -94,18 +94,18 @@ Frog.Model
         var $fileList = $('#filelist'),
             $slideShowCount = $("#filedrop-slide-show-count"),
             $slideShowImageContainer = $("#filedrop-slide-show-img"),
-			fileCount = 0;
-			
+            fileCount = 0;
+            
         filesResponse.data.resources.forEach(function(file, index) {
             if (FDPisImage(file.file.ext)) {
-				if ($filelist.length) {
-					// This only runs when you have uncommented the the HTML code above
-					// This code adds file names to the ul#filelist
-					$fileList.append(
-						$('<li></li>').text(file.file.name)
-					);
-				}
-				
+                if ($filelist.length) {
+                    // This only runs when you have uncommented the the HTML code above
+                    // This code adds file names to the ul#filelist
+                    $fileList.append(
+                        $('<li></li>').text(file.file.name)
+                    );
+                }
+                
                 $slideShowCount
                     .append(
                         $('<li></li>')
@@ -132,9 +132,9 @@ Frog.Model
                                     .attr('align', 'center')
                             )
                     );
-				fileCount++;
+                fileCount++;
             }
         });
-		
+        
     });
 </script>
