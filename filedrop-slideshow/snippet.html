@@ -94,13 +94,13 @@ Frog.Model
                     // This only runs when you have uncommented the the HTML code above
                     // This code adds file names to the ul#filelist
                     $fileList.append(
-                        $('<li></li>').text(file.file.name)
+                        $('<li>').text(file.file.name)
                     );
                 }
 
                 $slideShowCount
                     .append(
-                        $('<li></li>')
+                        $('<li>')
                         .attr('data-target', 'Carousel')
                         .attr('data-slide-to', fileCount)
                         .addClass(function() {
@@ -112,7 +112,7 @@ Frog.Model
 
                 $slideShowImageContainer
                     .append(
-                        $('<div></div>').addClass('item')
+                        $('<div>').addClass('item')
                         .addClass(function() {
                             if (fileCount === 0) {
                                 return 'active';
