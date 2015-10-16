@@ -63,21 +63,17 @@
         <span class="carousel-arrow-right"></span>
     </a>
 </div>
-<!-- This section brings back a list of the file names, uncomment if you wish this to be displayed -->
 <!--
-<ul id="filelist"></ul>
+    This section brings back a list of the file names, uncomment if you wish this to be displayed
+
+    <ul id="filelist"></ul>
 -->
 <script type="text/javascript">
 $('.carousel').carousel();
 
 var baseURL = Frog.Utilities.getBaseUrl(),
-    FDPisImage = function(ext) {
-        return ['jpg', 'jpeg', 'gif', 'png'].indexOf(ext.toLowerCase()) > -1;
-    },
-    imgAddress = function(file) {
-        return baseURL + '/app/file/resource/' + file.file.uuid;
-    },
-    fileDropUuid = '72C35B492002821AF1922FA01D6943066824AD8CD860E3AD'; // <--Change this to the UUID of your file drop widget
+    // Change fileDropUuid to the UUID of your file drop widget
+    fileDropUuid = '72C35B492002821AF1922FA01D6943066824AD8CD860E3AD';
 
 Frog.Model
     .api('filedrop.get', {
@@ -89,7 +85,8 @@ Frog.Model
             fileCount = 0;
 
         filesResponse.data.resources.forEach(function(file, index) {
-            if (FDPisImage(file.file.ext)) {
+            // Check whether the file is one of these filetypes; Want to add more? Add to the array
+            if (['jpg', 'jpeg', 'gif', 'png'].indexOf(file.file.ext.toLowerCase()) > -1) {
                 if ($filelist.length) {
                     // This only runs when you have uncommented the the HTML code above
                     // This code adds file names to the ul#filelist
@@ -120,13 +117,12 @@ Frog.Model
                         })
                         .append(
                             $('<img />').addClass('img-responsive')
-                            .attr('src', imgAddress(file))
+                            .attr('src', baseURL + '/app/file/resource/' + file.file.uuid)
                             .attr('align', 'center')
                         )
                     );
                 fileCount++;
             }
         });
-
     });
 </script>
