@@ -1,0 +1,128 @@
+<style>
+.carousel-fade .carousel-inner .item {
+    opacity: 0;
+    -webkit-transition-property: opacity;
+    -moz-transition-property: opacity;
+    -o-transition-property: opacity;
+    transition-property: opacity;
+}
+.carousel-fade .carousel-inner .active {
+    opacity: 1;
+}
+.carousel-fade .carousel-inner .active.left,
+.carousel-fade .carousel-inner .active.right {
+    left: 0;
+    opacity: 0;
+    z-index: 1;
+}
+.carousel-fade .carousel-inner .next.left,
+.carousel-fade .carousel-inner .prev.right {
+    opacity: 1;
+}
+.carousel-fade .carousel-control {
+    z-index: 2;
+}
+.carousel-inner img {
+    max-width: 100%;
+    height: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    min-width: 300px;
+}
+.carousel-arrow-left,
+.carousel-arrow-right {
+    top: 50%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-width: 15px;
+    margin-top: -15px;
+}
+.carousel-arrow-right {
+    left: 35%;
+    border-left-color: #FFFFFF;
+}
+.carousel-arrow-left {
+    right: 35%;
+    border-right-color: #FFFFFF;
+}
+</style>
+<div id="Carousel" class="carousel slide carousel-fade col-lg-8 col-offset-2">
+    <ol id="filedrop-slide-show-count" class="carousel-indicators">
+    </ol>
+    <div id="filedrop-slide-show-img" role="listbox" class="carousel-inner">
+    </div>
+    <!-- Left and right controls -->
+    <a class="left carousel-control" href="#Carousel" data-slide="prev">
+        <span class="carousel-arrow-left"></span>
+    </a>
+    <a class="right carousel-control" href="#Carousel" data-slide="next">
+        <span class="carousel-arrow-right"></span>
+    </a>
+</div>
+<!--
+    This section brings back a list of the file names, uncomment if you wish this to be displayed
+
+    <ul id="filelist"></ul>
+-->
+<script type="text/javascript">
+$('.carousel').carousel();
+
+var baseURL = Frog.Utilities.getBaseUrl(),
+    // Change fileDropUuid to the UUID of your file drop widget
+    fileDropUuid = '72C35B492002821AF1922FA01D6943066824AD8CD860E3AD';
+
+Frog.Model
+    .api('filedrop.get', {
+        filedrop: fileDropUuid
+    }).done(function(filesResponse) {
+        var $fileList = $('#filelist'),
+            $slideShowCount = $("#filedrop-slide-show-count"),
+            $slideShowImageContainer = $("#filedrop-slide-show-img"),
+            fileCount = 0;
+
+        filesResponse.data.resources.forEach(function(file, index) {
+            // Check whether the file is one of these filetypes; Want to add more? Add to the array
+            if (['jpg', 'jpeg', 'gif', 'png'].indexOf(file.file.ext.toLowerCase()) > -1) {
+                if ($filelist.length) {
+                    // This only runs when you have uncommented the the HTML code above
+                    // This code adds file names to the ul#filelist
+                    $fileList.append(
+                        $('<li>').text(file.file.name)
+                    );
+                }
+
+                $slideShowCount
+                    .append(
+                        $('<li>')
+                        .attr('data-target', 'Carousel')
+                        .attr('data-slide-to', fileCount)
+                        .addClass(function() {
+                            if (fileCount === 0) {
+                                return 'active';
+                            }
+                        })
+                    );
+
+                $slideShowImageContainer
+                    .append(
+                        $('<div>').addClass('item')
+                        .addClass(function() {
+                            if (fileCount === 0) {
+                                return 'active';
+                            }
+                        })
+                        .append(
+                            $('<img />').addClass('img-responsive')
+                            .attr('src', baseURL + '/app/file/resource/' + file.file.uuid)
+                            .attr('align', 'center')
+                        )
+                    );
+                fileCount++;
+            }
+        });
+    });
+</script>
