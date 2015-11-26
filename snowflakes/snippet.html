@@ -1,0 +1,156 @@
+<style>
+.snowflakes {
+    position: absolute;
+    left: 5%;
+    top: -15px;
+    width: 90%;
+    overflow: visible;
+}
+.snowflake {
+    position: absolute;
+    color: #fff;
+    -webkit-animation: falling 4.7s linear 0s infinite;
+    -moz-animation: falling 4.7s linear 0s infinite;
+    animation: falling 4.7s linear 0s infinite;
+}
+@-webkit-keyframes falling {
+    0% {
+        -webkit-transform: translate3d(0, 0, 0) rotate(0deg);
+    }
+    95% {
+        opacity: 0.8;
+    }
+    100% {
+        -webkit-transform: translate3d(0, 0, 0) rotate(360deg);
+    }
+}
+@-moz-keyframes falling {
+    0% {
+        -moz-transform: translate3d(0, 0, 0) rotate(0deg);
+    }
+    95% {
+        opacity: 0.8;
+    }
+    100% {
+        -moz-transform: translate(0, 0) rotate(360deg);
+    }
+}
+@keyframes falling {
+    0% {
+        transform: translate3d(0, 0, 0) rotate(0deg);
+    }
+    95% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(0, 0) rotate(360deg);
+    }
+}
+.uk_primary .os-titlebar .navbar-inner {
+    background-color: #d62441!important;
+    border-bottom: 3px solid #980000 !important
+}
+body.uk_primary .os-titlebar .navbar-search input {
+    background-color: #980000 !important;
+    border-color: #980000 !important;
+}
+</style>
+<script>
+var frogRevealingModule = (function() {
+    var keyframeprefix = '',
+        domPrefixes = 'Webkit Moz O ms Khtml'.split(' '),
+        pfx = '',
+        elm = document.createElement('div'),
+        snowing = new $.Deferred();
+    for (var i = 0; i < domPrefixes.length; i++) {
+        if (elm.style[domPrefixes[i] + 'AnimationName'] !== undefined) {
+            pfx = domPrefixes[i];
+            keyframeprefix = '-' + pfx.toLowerCase() + '-';
+            break;
+        }
+    }
+    var randInt = function(from, to) {
+        return Math.floor(Math.random() * (to - from + 1) + from);
+    };
+    var findKeyframeAnimation = function(a) {
+        var ss = document.styleSheets;
+        for (var i = ss.length - 1; i >= 0; i--) {
+            try {
+                var s = ss[i],
+                    rs = s.cssRules ? s.cssRules :
+                    s.rules ? s.rules : [];
+                for (var j = rs.length - 1; j >= 0; j--) {
+                    if ((rs[j].type === window.CSSRule.WEBKIT_KEYFRAMES_RULE || rs[j].type === window.CSSRule.MOZ_KEYFRAMES_RULE) && rs[j].name == a) {
+                        return rs[j];
+                    }
+                }
+                // Trying to interrogate a stylesheet from
+                // another domain will throw a security error
+            } catch (e) {}
+        }
+        return null;
+    };
+    $.fn.snow = function(options) {
+        options = options || {};
+        var me = this,
+            count = options.flakeCount || 20,
+            minDiameter = options.minDiameter || 20,
+            maxDiameter = options.maxDiameter || 35,
+            minOpacity = options.minOpacity || 50,
+            maxOpacity = options.maxOpacity || 100,
+            height = this.height(),
+            flakes = [],
+            keyframes = findKeyframeAnimation('falling'),
+            characters = ['&#10052;', '&#10053;', '&#10054;', '*'];
+        if (keyframes) {
+            keyframes[(typeof keyframes.insertRule == 'function') ? 'insertRule' : 'appendRule'](
+                '100% { ' + keyframeprefix + 'transform: translate3d(0,' +
+                height + 'px,0) rotate(360deg); opacity:0; }'
+            );
+        }
+        var i = count,
+            size, css, origin;
+        while (i--) {
+            size = randInt(minDiameter, maxDiameter);
+            origin = size / 2;
+            css = {
+                left: randInt(0, 100) + '%',
+                'font-size': size + 'px',
+                height: size + 'px',
+                width: size + 'px',
+                opacity: randInt(minOpacity, maxOpacity) * 0.01,
+                top: (-size - 20) + 'px'
+            };
+            css[keyframeprefix + 'transform-origin'] = origin + 'px ' + origin + 'px';
+            css[keyframeprefix + 'animation-delay'] = (Math.random() * 10) + 's';
+            flakes.push($('<div></div>').html(
+                characters[randInt(0, characters.length - 1)]
+            ).attr({
+                'class': 'snowflake'
+            }).css(css).appendTo(this));
+        }
+        this.on('webkitAnimationIteration animationIteration', function(e) {
+            $(e.target).css('left', randInt(0, 100) + '%');
+        });
+        this.data('snow', {
+            flakes: flakes
+        });
+        return this;
+    };
+
+    function makeItSnow() {
+        $('.dashboard-1, .dashboard-0').snow({
+            flakeCount: 50,
+            minDiameter: 10,
+            maxDiameter: 80
+        });
+    };
+
+    return {
+        snow: makeItSnow
+    };
+})();
+setTimeout(function() {
+    frogRevealingModule.snow();
+}, 3000);
+</script>
