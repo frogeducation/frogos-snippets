@@ -1,0 +1,18 @@
+<div id="siteIcon"></div>
+
+<script>
+  
+var siteLink = (s = $('.ui-dialog.focused').find('.sites_core').data('controllers')) &&
+	(c = s.sites_core) &&
+	c.options.site;
+
+Frog.Model
+	.api('sites.getInfo', {
+		link: siteLink,
+		method: "sites.getInfo"
+	}).done(function(siteResponse) {
+		$('#siteIcon').html("<img src='"+siteResponse.data.icon+"'>");
+});
+
+  
+ </script>
