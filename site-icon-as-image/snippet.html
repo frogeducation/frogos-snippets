@@ -1,18 +1,26 @@
-<div id="siteIcon"></div>
-
 <script>
-  
-var siteLink = (s = $('.ui-dialog.focused').find('.sites_core').data('controllers')) &&
-	(c = s.sites_core) &&
-	c.options.site;
+
+var siteImLookingAt = arguments[0].closest('.ui-dialog').find('.sites_core').data('controllers'),
+
+    siteCore = siteImLookingAt.sites_core,
+
+    siteLink = siteImLookingAt &&  
+	           siteCore &&
+	           siteCore.options.site,
+
+	$newDiv = $("<div>", {
+                       id: Frog.Utilities.generateSimpleId()
+                      }
+            );
 
 Frog.Model
 	.api('sites.getInfo', {
 		link: siteLink,
 		method: "sites.getInfo"
 	}).done(function(siteResponse) {
-		$('#siteIcon').html("<img src='"+siteResponse.data.icon+"'>");
+		$newDiv.html("<img src='"+siteResponse.data.icon+"'>");
 });
-
+arguments[0].append($newDiv);
   
  </script>
+
