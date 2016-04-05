@@ -1,0 +1,63 @@
+<script>
+var $assignmentsList, user;
+
+// Create a div, and give it is unqiue ID
+$assignmentsList = $("<div>", {
+        id: Frog.Utilities.generateSimpleId()
+    }
+);
+
+// Add a table to the div
+$assignmentsList.html(
+    '<b>Your open assignments:</b>'+
+    '<table class="table" id="your_assignments">'+
+        '<tr>'+
+            '<th>Subject</th>'+
+            '<th>Title</th>'+
+            '<th>Due Date</th>'+
+            '<th>Instructions</th>'+
+        '</tr>'+
+    '</table>'
+);
+
+// Use Frog's API to get the logged in student
+user = FrogOS.getUser();
+
+// Use Frog's assignmentreports.getData to get 15 assignments for the logged in student.
+Frog.Model
+    .api('assignmentreports.getData', {
+        filter: { status: "open" },
+        limit: 15,
+        offset: 0,
+        options: { child_uuid: user.uuid },
+        report_name: "student.assignments"
+    }).done(function(assignmentResponse) {
+
+        // Loop through all the responses
+        assignmentResponse.data.forEach(function(work) {
+
+            // Use monment.js to convert the due date timestamp to a human-readable format
+            var dueDate = moment.unix(work.due_date).format("DD/MM/YY");
+
+            // Find the table in the DIV created above and add in the various fields from the API's response as a  new row
+            $assignmentsList.find('tbody')
+                .append(
+                    '<tr>'+
+                         '<td>'+
+                         work.subject_name+
+                         '</td><td><b>'+
+                         work.assignment_name+
+                         '</b></td><td>'+
+                         work.instructions+
+                         '</td><td>'+
+                         dueDate+
+                         '</td>'+
+                    '</tr>'
+                );
+        }
+    );
+});
+
+
+arguments[0].append($assignmentsList);
+</script>
