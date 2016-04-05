@@ -1,5 +1,7 @@
 <script>
 
+// arguments.[0] is the HTML widget your code is sitting in.  Using this, it is possible to identify the site containing the HTML widget
+
 var siteImLookingAt = arguments[0].closest('.ui-dialog').find('.sites_core').data('controllers'),
 
     siteCore = siteImLookingAt.sites_core,
@@ -7,11 +9,13 @@ var siteImLookingAt = arguments[0].closest('.ui-dialog').find('.sites_core').dat
     siteLink = siteImLookingAt &&  
 	           siteCore &&
 	           siteCore.options.site,
-
+    // This code below uses jQuery to create a DIV and uses one of Frog's utitilies to create a unique ID, allowing jQuery to append to the div, $newDiv.
 	$newDiv = $("<div>", {
                        id: Frog.Utilities.generateSimpleId()
                       }
             );
+
+// Knowing the siteLink from the above, we can using Frog's API sites.getInfo to return the site's icon
 
 Frog.Model
 	.api('sites.getInfo', {

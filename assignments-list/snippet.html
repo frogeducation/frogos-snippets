@@ -15,29 +15,32 @@ var $assignmentsList = $("<div>", {
             '<th>Instructions</th>'+
             '</tr>'+
        '</table>'
-    );
+    ),
+    user = FrogOS.getUser();
 
 
 
 Frog.Model
-    .api('assignmentspupils.getmyassigned', {
-        status: 'open',
-        limit: 5,
-        offset: 0
+    .api('assignmentreports.getData', {
+        filter: {status:"open"},
+        limit:15,
+        offset:0,
+        options: {child_uuid:user.uuid},
+        report_name:"student.assignments"
     }).done(function(assignmentResponse) {
-        console.log(assignmentResponse.data.assignments);
-        assignmentResponse.data.assignments.forEach(function(work, index) {
+        console.log(assignmentResponse.data);
+        assignmentResponse.data.forEach(function(work, index) {
 
-            var dueDate = new Date(work.assignment.end * 1000).toDateString();
+            var dueDate = moment.unix(work.due_date).format("DD/MM/YY");
             $assignmentsList
                 .append($(
                             '<tr>'+
                             '<td>'+
-                                work.assignment.subject.name+
+                                work.subject_name+
                             '</td><td><b>'+
-                                work.assignment.alias+
+                                work.assignment_name+
                             '</b></td><td>'+
-                                work.assignment.message+
+                                work.instructions+
                             '</td><td>'+
                                 dueDate+
                             '</td>'+
