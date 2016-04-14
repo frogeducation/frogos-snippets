@@ -1,0 +1,55 @@
+<script>
+
+var user,$teachersList,myArray;
+
+user = FrogOS.getUser();
+
+$teachersList = $("<div>", {
+    id: Frog.Utilities.generateSimpleId()
+});
+$teachersList.html(
+    '<b>Your teachers:</b>'
+);
+
+myArray=[];
+
+
+/// Get all the groups assoicated with logged in user
+Frog.Model.api('users.getDataInCategory', {
+    user_uuid:user.uuid,
+    /// this uuid does not appear to be required
+    uuid:"67A87F002004C5F7E42DCFF776D54C02662E76BC0F4FCCE2"
+}).done(function(groupResponse) {
+    /// Get the leaders for each group
+    groupResponse.data.groups.forEach(function(grop) {
+            Frog.Model.api('groups.getLeaders', {
+                uuid:grop.uuid
+            }).done(function(leaderResponse) {
+                /// get the user details of each leader
+                Frog.Model.api('users.getOne', {
+                    uuid:leaderResponse.data[0]
+                }).done(function(userResponse) {
+                    ///Only display results with a teacher attached, so profile groups etc... will not be listed
+                    if (userResponse.data.displayname!==undefined && userResponse.data.displayname!==null) {
+                        $teachersList.append(
+                           '<li>'+
+                            grop.name+
+                            ' - '+
+                            userResponse.data.displayname+
+                            '</li>'
+                        );
+                    }
+                });
+
+            });
+       // }
+    });
+});
+
+
+arguments[0].append($teachersList);
+
+
+</script>
+
+
