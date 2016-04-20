@@ -1,0 +1,50 @@
+<script>
+var siteImLookingAt, siteCore, siteLink, $newDiv;
+
+// arguments[0] is the HTML widget your code is sitting in.  Using this, it is possible to identify the site containing the HTML widget
+siteImLookingAt = arguments[0].closest('.ui-dialog').find('.sites_core').data('controllers');
+
+siteCore = siteImLookingAt.sites_core;
+
+siteLink = siteImLookingAt && siteCore && siteCore.options.site;
+
+// This code below uses jQuery to create a DIV and uses one of Frog's utitilies to create a unique ID, allowing jQuery to append to the div, $newDiv.
+$newDiv = $("<div>", {
+        id: Frog.Utilities.generateSimpleId()
+    }
+);
+
+// Knowing the siteLink from the above, we can use Frog's API sites.getInfo to return the site's icon
+Frog.Model
+    .api('share.getList', {
+        target: "CF96C84720025152F781FF7433761F0D75EAEDCC694DC59C"
+    }).done(function(siteResponse) {
+
+        //Create an variable to add a title to the DIV
+        var alt="";
+        // share.getList does not differentiate between public in school and public on the web, if company is defined, the site is not private
+        if (siteResponse.data.company!==undefined && siteResponse.data.company!==null) {
+            $newDiv.addClass(
+                // Use fontawesome to dpecit status
+                "fa fa-unlock-alt fa-3x"
+            );
+            alt += "Site is not private and is shared with:\n";
+        } else {
+            $newDiv.addClass(
+                "fa fa-lock fa-3x"
+            );
+            alt += "Site is private and is visible to:\n";
+        }
+        //Loop through siteResponse.data.user object and return the displayname value
+        for (var key in siteResponse.data.user) {
+            var obj = siteResponse.data.user[key];
+            alt+=obj.identity.displayname+'\n';
+        }
+        // set the alt variable as $newDiv's title
+        $newDiv.attr('title', alt);
+    });
+
+
+arguments[0].append($newDiv);
+
+</script>

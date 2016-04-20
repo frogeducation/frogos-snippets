@@ -1,0 +1,99 @@
+<style>
+
+.maxBuckets {
+   width:100% !important;
+    }
+
+.hideBucket{
+   display:none !important;
+}
+.showBucket {
+   display:block !important;
+}
+
+.bucketTabs {
+    float: left;
+}
+
+.bucketTab {
+    display: inline-block;
+    min-width:65px;
+    height:27px;
+    text-align:center;
+    border: 1px solid #cccccc;
+    border-width: 1px 1px 0 1px;
+    border-radius:5px;
+    border-bottom-right-radius:0px;
+    border-bottom-left-radius:0px;
+    margin: 0px;
+    padding: 5px;
+    padding-top:10px;
+    cursor: pointer;
+    min-width: 20px;
+    font-size:10pt;
+/* Gradient background for the tab buttons */
+    background: #0497da; /* Old browsers */
+    background: -moz-linear-gradient(top,  #0497da 0%, #0064cd 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top,  #0497da 0%,#0064cd 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom,  #0497da 0%,#0064cd 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0497da', endColorstr='#0064cd',GradientType=0 ); /* IE6-9 */
+    color:#FFFFFF;
+}
+
+.bucket-Tab.active {
+    background: #FFFFFF;
+    color:#000000;
+}
+</style>
+
+<div class="bucketTabs">
+    <div class="bucketTab active" data-no="2">Bucket 2</div>
+    <div class="bucketTab" data-no="3">Bucket 3</div>
+    <div class="bucketTab" data-no="4">Bucket 4</div>
+    <div class="bucketTab" data-no="5">Bucket 5</div>
+    <div class="bucketTab" data-no="6">Bucket 6</div>
+    <div class="bucketTab" data-no="7">Bucket 7</div>
+</div>
+
+<script>
+
+var $siteImLookingAt = arguments[0].closest('.ui-dialog').find('.sites_core').data('controllers').sites_core,
+    $bucketsArray = {};
+
+    // Add a class called maxBuckets to each bucket, this sets their width to 100%
+    $siteImLookingAt.find('.span1').addClass("maxBuckets");
+    $siteImLookingAt.find('.span2').addClass("maxBuckets");
+    $siteImLookingAt.find('.span3').addClass("maxBuckets");
+    $siteImLookingAt.find('.span4').addClass("maxBuckets");
+    $siteImLookingAt.find('.span5').addClass("maxBuckets");
+    $siteImLookingAt.find('.span6').addClass("maxBuckets");
+    $siteImLookingAt.find('.span7').addClass("maxBuckets");
+    $siteImLookingAt.find('.span8').addClass("maxBuckets");
+    $siteImLookingAt.find('.span9').addClass("maxBuckets");
+    $siteImLookingAt.find('.span10').addClass("maxBuckets");
+    $siteImLookingAt.find('.span11').addClass("maxBuckets");
+    $siteImLookingAt.find('.span12').addClass("maxBuckets");
+
+    // Cycle throuch all tab buttons, adding the showBucket class
+    for (var i=2;i<8;i++) {
+        $siteImLookingAt.find('div[data-order='+i+']').addClass('showBucket');
+    }
+    // hideAllShowOne removes showBucket from each bucket and adds the class hideBucket, except the one passed through by the function call.  The function then removes the active class from the highlighted button and adds it to clicked button.  Finally, it adds showBucket onto the requested bucket
+    hideAllShowOne = function(bucket) {
+        for (var i=2;i<8;i++) {
+            $siteImLookingAt.find('div[data-order='+i+']').removeClass('showBucket');
+            $siteImLookingAt.find('div[data-order='+i+']').addClass('hideBucket');
+        }
+        $siteImLookingAt.find('.bucketTab').removeClass("active"); // remove the active class from all DIVs
+        $siteImLookingAt.find('.bucketTab[data-no=' + bucket + ']').addClass("active"); // add the active class to the selected DIV
+        $siteImLookingAt.find('div[data-order='+bucket+']').addClass('showBucket');
+    };
+
+hideAllShowOne(2);
+
+// Adds a click event to each button
+$siteImLookingAt.find('.notice-tab[data-no]').bind('click', function(ev) {
+    hideAllShowOne($(this).data('no'));
+});
+
+</script>
